@@ -1,10 +1,11 @@
 {
   "name": "datatable-parser",
   "version": "1.0.0",
-  "description": "jquery datatables server-side request parser",
+  "description": "A request parser for jquery datatable server-side processing request",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "eslint"
   },
   "repository": {
     "type": "git",
@@ -24,10 +25,11 @@
   },
   "homepage": "https://github.com/alwint3r/datatable-parser#readme",
   "devDependencies": {
+    "chai": "^3.5.0",
     "eslint": "^3.9.1",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^3.0.1",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.6.0",
     "mocha": "^3.1.2"
   },
