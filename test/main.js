@@ -120,4 +120,68 @@ describe('parser(request) function', () => {
 
     expect(parser(withSearch)).to.deep.equal(expected);
   });
+
+  it('Should generate output with expected search according to column search', () => {
+    const expected = _.merge(generallyExpected, {
+      search: [
+        { no: 'Alwin' },
+        { name: 'Alwin' },
+        { address: 'Arrasyid' },
+        { phone: 'Alwin' },
+        { email: 'Alwin' },
+      ],
+    });
+
+    const withSearch = _.merge(request, {
+      search: {
+        value: 'Alwin',
+        regex: 'false',
+      },
+      columns: [
+        {}, // preserve first column
+        {}, // preserve second column
+        {
+          data: 'address',
+          search: {
+            value: 'Arrasyid',
+            regex: 'false',
+          },
+        },
+      ],
+    });
+
+    expect(parser(withSearch)).to.deep.equal(expected);
+  });
+
+  it('Should generate output with expected search with regex', () => {
+    const expected = _.merge(generallyExpected, {
+      search: [
+        { no: /Alwin/ },
+        { name: /Alwin/ },
+        { address: 'Arrasyid' },
+        { phone: /Alwin/ },
+        { email: /Alwin/ },
+      ],
+    });
+
+    const withSearch = _.merge(request, {
+      search: {
+        value: 'Alwin',
+        regex: 'true',
+      },
+      columns: [
+        {}, // preserve first column
+        {}, // preserve second column
+        {
+          data: 'address',
+          search: {
+            value: 'Arrasyid',
+            regex: 'false',
+          },
+        },
+      ],
+    });
+
+    expect(parser(withSearch)).to.deep.equal(expected);
+  });
 });
