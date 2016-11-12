@@ -17,6 +17,36 @@ function getOrdering(request) {
   ]);
 }
 
+function getSearchableColumns(request) {
+  return _.filter(request.columns, col => col.searchable === 'true');
+}
+
+function getSearchValue(searchable) {
+  if (searchable.search.value) {
+    return searchable.search.regex === 'true'
+      ? new RegExp(searchable.search.value)
+      : searchable.search.value;
+  }
+
+  return '';
+}
+
+function falsySearchValue(search) {
+  return _(search)
+    .keys()
+    .filter(key => !search[key])
+    .value();
+}
+
+function buildSearch(request) {
+  return _(getSearchableColumns(request))
+    .map(col => ({
+      [col.data]: getSearchValue(col) || getSearchValue(request),
+    }))
+    .filter(search => falsySearchValue(search).length < 1)
+    .value();
+}
+
 function parser(request) {
   if (!_.isObject(request) || _.isArray(request)) {
     throw new TypeError('Passed argument is not a valid request object');
@@ -29,7 +59,7 @@ function parser(request) {
   }
 
   return {
-    search: [],
+    search: buildSearch(request),
     order: getOrdering(request),
     columns: getColumnNames(request),
     start: Number(request.start),

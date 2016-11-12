@@ -4,10 +4,27 @@
 /* eslint import/no-extraneous-dependencies:0 */
 
 const parser = require('../');
+const _ = require('lodash');
 const expect = require('chai').expect;
 
 // mocks
 const request = require('./mocks/request.json');
+
+const generallyExpected = {
+  search: [],
+  order: [
+    ['no', 'asc'],
+  ],
+  columns: [
+    'no',
+    'name',
+    'address',
+    'phone',
+    'email',
+  ],
+  start: 0,
+  length: 10,
+};
 
 describe('Datatable parser module', () => {
   it('Should export a function', () => {
@@ -60,22 +77,47 @@ describe('Datatable parser module', () => {
 
 describe('parser(request) function', () => {
   it('Should generate expected output', () => {
-    const expected = {
-      search: [],
-      order: [
-        ['no', 'asc'],
-      ],
-      columns: [
-        'no',
-        'name',
-        'address',
-        'phone',
-        'email',
-      ],
-      start: 0,
-      length: 10,
-    };
+    expect(parser(request)).to.deep.equal(generallyExpected);
+  });
 
-    expect(parser(request)).to.deep.equal(expected);
+  it('Should generate output with expected ordering', () => {
+    const expected = _.merge(generallyExpected, {
+      order: [
+        ['name', 'desc'],
+      ],
+    });
+
+    const newRequest = _.merge(request, {
+      order: [
+        {
+          column: '1',
+          dir: 'desc',
+        },
+      ],
+    });
+
+    expect(parser(newRequest)).to.deep.equal(expected);
+  });
+
+
+  it('Should generate output with expected search', () => {
+    const expected = _.merge(generallyExpected, {
+      search: [
+        { no: 'Alwin' },
+        { name: 'Alwin' },
+        { address: 'Alwin' },
+        { phone: 'Alwin' },
+        { email: 'Alwin' },
+      ],
+    });
+
+    const withSearch = _.merge(request, {
+      search: {
+        value: 'Alwin',
+        regex: 'false',
+      },
+    });
+
+    expect(parser(withSearch)).to.deep.equal(expected);
   });
 });
