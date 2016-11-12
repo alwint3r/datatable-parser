@@ -6,6 +6,9 @@
 const parser = require('../');
 const expect = require('chai').expect;
 
+// mocks
+const request = require('./mocks/request.json');
+
 describe('Datatable parser module', () => {
   it('Should export a function', () => {
     expect(parser).to.be.a('function');
@@ -55,3 +58,24 @@ describe('Datatable parser module', () => {
   });
 });
 
+describe('parser(request) function', () => {
+  it('Should generate expected output', () => {
+    const expected = {
+      search: [],
+      order: [
+        ['no', 'asc'],
+      ],
+      columns: [
+        'no',
+        'name',
+        'address',
+        'phone',
+        'email',
+      ],
+      start: 0,
+      length: 10,
+    };
+
+    expect(parser(request)).to.deep.equal(expected);
+  });
+});
