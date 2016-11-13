@@ -6,6 +6,10 @@ function validate(object, required) {
   return _.filter(required, _.has.bind(null, object)).length === required.length;
 }
 
+function boolify(booleanAlike) {
+  return booleanAlike === 'true';
+}
+
 function getColumnNames(request) {
   return _.map(request.columns, col => col.data);
 }
@@ -18,12 +22,12 @@ function getOrdering(request) {
 }
 
 function getSearchableColumns(request) {
-  return _.filter(request.columns, col => col.searchable === 'true');
+  return _.filter(request.columns, col => boolify(col.searchable));
 }
 
 function getSearchValue(searchable) {
   if (searchable.search.value) {
-    return searchable.search.regex === 'true'
+    return boolify(searchable.search.regex)
       ? new RegExp(searchable.search.value)
       : searchable.search.value;
   }
